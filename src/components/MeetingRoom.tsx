@@ -46,7 +46,7 @@ const MeetingRoom = () => {
   const searchParams = useSearchParams();
   const isPersonalRoom = !!searchParams.get("personal");
 
-  const [layout, setLayout] = useState<CallLayoutType>("zoom-speaker");
+  const [layout, setLayout] = useState<CallLayoutType>("responsive-grid");
   const [showParticipents, setShowParticipents] = useState(false);
   const [showChat, setShowChat] = useState(false);
 
@@ -66,7 +66,7 @@ const MeetingRoom = () => {
     if (screenShareStatus === "enabled" && layout !== "screen-share") {
       setLayout("screen-share");
     } else if (screenShareStatus !== "enabled" && layout === "screen-share") {
-      setLayout("zoom-speaker");
+      setLayout("responsive-grid");
     }
   }, [screenShareStatus]); // Removed layout from dependencies to prevent infinite loop
 
@@ -76,7 +76,7 @@ const MeetingRoom = () => {
       const participantCount = participants.length;
       if (participantCount <= 2 && layout !== "zoom-speaker") {
         setLayout("zoom-speaker");
-      } else if (participantCount > 4 && layout === "speaker-center") {
+      } else if (participantCount > 4 && layout === "zoom-speaker") {
         // For larger meetings, default to responsive grid
         setLayout("responsive-grid");
       }
@@ -86,26 +86,34 @@ const MeetingRoom = () => {
   if (callingState !== CallingState.JOINED) return <Loader />;
 
   const CallLayout = () => {
-    switch (layout) {
-      case "responsive-grid":
-        return <ResponsiveGridLayout />;
+    try {
+      switch (layout) {
+        case "responsive-grid":
+          return <ResponsiveGridLayout />;
 
-      case "zoom-speaker":
-        return <ZoomLikeSpeakerLayout />;
+        case "zoom-speaker":
+          // Use basic PaginatedGridLayout instead of custom ZoomLikeSpeakerLayout for stability
+          return <PaginatedGridLayout />;
 
-      case "classic-grid":
-        return (
-          <PaginatedGridLayout ParticipantViewUI={CustomParticipantViewUI} mirrorLocalParticipantVideo={false} />
-        );
+        case "classic-grid":
+          return (
+            <PaginatedGridLayout />
+          );
 
-      case "speaker-center":
-        return <SpeakerView />;
+        case "speaker-center":
+          return <SpeakerLayout />;
 
-      case "screen-share":
-        return <ScreenShareLayout />;
+        case "screen-share":
+          return <ScreenShareLayout />;
 
-      default:
-        return <ZoomLikeSpeakerLayout />;
+        default:
+          // Default to stable PaginatedGridLayout
+          return <PaginatedGridLayout />;
+      }
+    } catch (error) {
+      console.error('Layout rendering error:', error);
+      // Fallback to basic grid layout
+      return <PaginatedGridLayout />;
     }
   };
 
@@ -163,9 +171,9 @@ const MeetingRoom = () => {
           >
             {[
               { name: "Smart Grid", value: "responsive-grid", icon: Grid3x3 },
-              { name: "Speaker View", value: "zoom-speaker", icon: Users },
-              { name: "Classic Grid", value: "classic-grid", icon: LayoutList },
-              { name: "Gallery", value: "speaker-center", icon: Monitor }
+              { name: "Grid View", value: "zoom-speaker", icon: Users },
+              { name: "Gallery", value: "classic-grid", icon: LayoutList },
+              { name: "Focus View", value: "speaker-center", icon: Monitor }
             ].map((item, index) => (
               <div key={index}>
                 <DropdownMenuItem

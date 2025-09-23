@@ -7,7 +7,6 @@ import {
   ParticipantView,
 } from "@stream-io/video-react-sdk";
 import { cn } from "@/lib/utils";
-import { CustomParticipantViewUI } from "./custom/CustomParticipantViewUI";
 
 interface ResponsiveGridLayoutProps {
   showParticipantCount?: boolean;
@@ -126,14 +125,12 @@ const ResponsiveGridLayout: React.FC<ResponsiveGridLayoutProps> = ({
         {!isLastTile ? (
           <ParticipantView
             participant={participant}
-            ParticipantViewUI={CustomParticipantViewUI}
             className="w-full h-full"
           />
         ) : (
           <>
             <ParticipantView
               participant={participant}
-              ParticipantViewUI={CustomParticipantViewUI}
               className="w-full h-full opacity-50"
             />
             <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
