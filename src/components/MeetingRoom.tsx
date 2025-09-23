@@ -63,25 +63,32 @@ const MeetingRoom = () => {
 
   // Auto-switch to screen share layout when someone starts screen sharing
   useEffect(() => {
-    if (screenShareStatus === "enabled" && layout !== "screen-share") {
-      setLayout("screen-share");
-    } else if (screenShareStatus !== "enabled" && layout === "screen-share") {
-      setLayout("responsive-grid");
+    if (screenShareStatus === "enabled") {
+      setLayout((currentLayout) => {
+        return currentLayout !== "screen-share" ? "screen-share" : currentLayout;
+      });
+    } else if (screenShareStatus === "disabled" || screenShareStatus === undefined) {
+      setLayout((currentLayout) => {
+        return currentLayout === "screen-share" ? "responsive-grid" : currentLayout;
+      });
     }
-  }, [screenShareStatus]); // Removed layout from dependencies to prevent infinite loop
+  }, [screenShareStatus]);
 
   // Auto-switch to appropriate layout based on participant count
   useEffect(() => {
-    if (layout !== "screen-share") {
-      const participantCount = participants.length;
-      if (participantCount <= 2 && layout !== "zoom-speaker") {
-        setLayout("zoom-speaker");
-      } else if (participantCount > 4 && layout === "zoom-speaker") {
-        // For larger meetings, default to responsive grid
-        setLayout("responsive-grid");
+    const participantCount = participants.length;
+    setLayout((currentLayout) => {
+      if (currentLayout !== "screen-share") {
+        if (participantCount <= 2 && currentLayout !== "zoom-speaker") {
+          return "zoom-speaker";
+        } else if (participantCount > 4 && currentLayout === "zoom-speaker") {
+          // For larger meetings, default to responsive grid
+          return "responsive-grid";
+        }
       }
-    }
-  }, [participants.length]); // Removed layout from dependencies to prevent infinite loop
+      return currentLayout;
+    });
+  }, [participants.length]);
 
   if (callingState !== CallingState.JOINED) return <Loader />;
 
