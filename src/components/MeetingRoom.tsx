@@ -1,43 +1,35 @@
 "use client"
 import { cn } from "@/lib/utils";
 import {
-  CallControls,
-  CallingState,
-  CallParticipantsList,
-  CallStatsButton,
-  PaginatedGridLayout,
-  ParticipantView,
-  SpeakerLayout,
-  useCallStateHooks,
-  useParticipantViewContext,
+    CallControls,
+    CallingState,
+    CallParticipantsList,
+    CallStatsButton,
+    PaginatedGridLayout,
+    SpeakerLayout,
+    useCallStateHooks
 } from "@stream-io/video-react-sdk";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LayoutList, User, MessageCircle, Grid3x3, Users, Monitor } from "lucide-react";
+import { Grid3x3, LayoutList, MessageCircle, Monitor, User, Users } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { AutoVideoQualityAdjuster } from "./AutoVideoQualityAdjuster";
+import ChatSidebar from "./ChatSidebar";
 import EndCallButton from "./EndCallButton";
+import ErrorBoundary from "./ErrorBoundary";
 import HostControls from "./HostControls";
 import Loader from "./Loader";
-import Image from "next/image";
-import { CompactVideoQualityControls } from "./VideoQualityDashboard";
-import { AutoVideoQualityAdjuster } from "./AutoVideoQualityAdjuster";
-import { SpeakerView } from "./test/screen-view/SpeakerView";
-import { CustomParticipantViewUI } from "./custom/CustomParticipantViewUI";
-import { CustomParticipantViewUIBar } from "./custom/CustomParticipantViewUIBar";
-import ChatSidebar from "./ChatSidebar";
-import ScreenShareControls from "./ScreenShareControls";
+import ResponsiveGridLayout from "./ResponsiveGridLayout";
 import ScreenShareLayout from "./ScreenShareLayout";
 import ScreenShareNotification from "./ScreenShareNotification";
-import ResponsiveGridLayout from "./ResponsiveGridLayout";
-import ZoomLikeSpeakerLayout from "./ZoomLikeSpeakerLayout";
-import ErrorBoundary from "./ErrorBoundary";
+import { CompactVideoQualityControls } from "./VideoQualityDashboard";
 
 type CallLayoutType = "responsive-grid" | "zoom-speaker" | "speaker-center" | "screen-share" | "classic-grid";
 
